@@ -6,9 +6,24 @@ Listings/
 *.map
 *.crf
 *.d
+*.obj
+*.lst
+*.lnp
+*.dep
 *.uvguix.*
+*.uvgui
 *.uvoptx
 JLinkLog.txt
+*.build_log.htm
+**/MDK-ARM/**/*.htm
+
+# Generated build directories
+**/build/
+
+# Local IDE workspaces and installed device packs
+.vscode/
+**/vscode/
+**/Drivers/CMSIS/Lib/
 
 # 构建输出（可重新生成）
 *.bin
