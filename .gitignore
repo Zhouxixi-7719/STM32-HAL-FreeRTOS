@@ -1,0 +1,24 @@
+# Keil MDK 构建产物
+Objects/
+Listings/
+*.o
+*.axf
+*.map
+*.crf
+*.d
+*.uvguix.*
+*.uvoptx
+JLinkLog.txt
+
+# 构建输出（可重新生成）
+*.bin
+*.hex
+*.elf
+
+# STM32CubeMX
+*.ioc.bak
+
+# 编辑器 / 系统
+.vscode/
+.DS_Store
+Thumbs.db
