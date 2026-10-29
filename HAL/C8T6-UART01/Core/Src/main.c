@@ -56,6 +56,45 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+HAL_StatusTypeDef tx_status;
+
+#define LED1_ON()           HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);  
+#define LED1_OFF()          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);    
+#define LED2_ON()           HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);    
+#define LED2_OFF()          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
+
+uint8_t Tx_str1[] = "hello world\r\n";
+uint8_t Tx_str2[] = "LED2 Open\r\n";
+uint8_t Tx_str3[] = "LED2 Closed\r\n";
+
+uint8_t Rx_date = 0;
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    if(huart->Instance == USART1)
+    {        
+        if(Rx_date == 0xa1)
+        {
+            LED2_ON();
+            
+            LED1_ON();  
+            HAL_UART_Transmit(&huart1, Tx_str2, sizeof(Tx_str2), 10000 );
+            LED1_OFF();   
+            HAL_UART_Receive_IT(&huart1, &Rx_date, 1);
+
+        }
+        else if(Rx_date == 0xa2)
+        {
+            LED2_OFF();
+            
+            LED1_ON();  
+            HAL_UART_Transmit(&huart1, Tx_str3, sizeof(Tx_str3), 10000 );
+            LED1_OFF();   
+            HAL_UART_Receive_IT(&huart1, &Rx_date, 1);
+        }
+    }
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -89,13 +128,19 @@ int main(void)
   MX_GPIO_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+    
+  LED1_ON();  
+  tx_status = HAL_UART_Transmit(&huart1, Tx_str1, sizeof(Tx_str1), 10000 );
+  LED1_OFF();   
+  HAL_UART_Receive_IT(&huart1, &Rx_date, 1);
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
