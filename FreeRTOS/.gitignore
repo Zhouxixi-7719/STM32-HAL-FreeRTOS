@@ -1,0 +1,28 @@
+# ===== Keil MDK 构建产物（可重新生成，勿入库） =====
+Objects/
+Listings/
+DebugConfig/
+*.uvguix.*
+*.uvgui.*
+*.uvoptx
+*.o
+*.obj
+*.d
+*.crf
+*.axf
+*.map
+*.lnp
+*.dep
+*.lst
+*.build_log.htm
+JLinkLog.txt
+
+# ===== VS Code / 本地工作区 / CMSIS 器件包 =====
+vscode/
+.vscode/
+.workbuddy-ai/
+
+# ===== 构建输出 =====
+*.hex
+*.bin
+*.elf
