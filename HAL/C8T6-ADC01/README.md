@@ -18,3 +18,60 @@
 ## 使用说明
 
 将模拟电压接入 PA0，电压范围应保持在 MCU 的供电范围内（0 至 3.3 V）。通过串口转 USB 模块连接 PA9（MCU TX）和 GND，在串口终端选择 9600 baud、8N1 查看采样值与电压。
+
+
+## ADC中断形式和轮询形式
+
+### 使用轮询ADC：
+每次使用ADC时，在定义好的函数中先用
+```c
+HAL_ADC_Start(&hadc1);
+```
+开启ADC通道，在主循环中不断轮询调用：
+```c
+void ADC_Get_Value()
+{
+    HAL_ADC_Start(&hadc1);
+    LED1_ON();
+    if(HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
+    {
+        ADC_Value = HAL_ADC_GetValue(&hadc1);
+        ADC_Volt = ADC_Value * 330 / 4096;
+    }
+    UR1_Send_Info();
+    LED1_OFF();
+    HAL_ADC_Stop(&hadc1);
+}
+```
+
+### 使用中断ADC
+先在主循环中不断开启
+```c
+HAL_ADC_Start_IT(&hadc1);
+```
+开启ADC中断吗，然后在中断回调函数中，判断ADC的通道：
+```c
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+    if(hadc->Instance == ADC1)
+    {
+        LED1_ON();
+        ADC_Value = HAL_ADC_GetValue(&hadc1);
+        ADC_Volt = ADC_Value * 330 / 4096;
+        UR1_Send_Info();
+        LED1_OFF();
+    }
+}
+```
+
+### 串口信息的发送
+先使用sprintf()函数把要发送的信息写进字符串里，然后使用串口发送该字符串：
+```c
+void UR1_Send_Info()
+{
+    sprintf((char*)str_buff, "采样值： %d, 电压值：%d.%d%dV\r\n", ADC_Value,                                                                         ADC_Volt/100, 
+                                                               (ADC_Volt%100)/10,                                                                  ADC_Volt%10);
+	HAL_UART_Transmit(&huart1, str_buff, sizeof(str_buff), 10000);
+}
+
+```
