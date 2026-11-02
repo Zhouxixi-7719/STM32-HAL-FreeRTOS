@@ -49,7 +49,7 @@ void ADC_Get_Value()
 ```c
 HAL_ADC_Start_IT(&hadc1);
 ```
-开启ADC中断吗，然后在中断回调函数中，判断ADC的通道：
+开启ADC中断，然后在中断回调函数中，判断ADC的外设实例：
 ```c
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
